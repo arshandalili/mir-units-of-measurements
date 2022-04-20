@@ -82,11 +82,11 @@ PERSIAN_UNDER_1000_NUMBERS = {
 
 
 PERSIAN_REQUIRED_EXTENDABLE_NUMBERS = {
-    'دهم': 0.1,
-   	'صدم': 0.01,
-   	'هزارم': 0.001,
+    # 'دهم': 0.1,
+   	# 'صدم': 0.01,
+   	# 'هزارم': 0.001,
 
-	'صد': 100,  # YES I know these are redundant but it has a different usage
+	# 'صد': 100,  # YES I know these are redundant but it has a different usage
 	'هزار': 1000,
 	'میلیون': 10**6,  # Handle different form?
 	'ملیون': 10**6,
