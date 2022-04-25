@@ -67,11 +67,21 @@ def extract_units(text):
         pattern = [COMPLEX_UNIT, UNIT_PREF_DIM_SEQ, UNIT_PREF_DIM, UNIT_PREF][level]
         matches = [match for match in re.finditer(pattern, text)]
         if level == 0:
-            return [{
-                'marker': match.group(),
-                'span': match.span(),
-                'object': getComplexUnitInstance(match.group(), 1)
-            } for match in matches]
+            extracted_units = []
+            for match in matches:
+                before_index = match.span()[0] - 1
+                after_index = match.span()[1]
+                if before_index >= 0 and re.match('\w', text[before_index]):
+                    continue
+                if after_index < len(text) and re.match('\w', text[after_index]):
+                    continue
+
+                extracted_units.append({
+                    'marker': match.group(),
+                    'span': match.span(),
+                    'object': getComplexUnitInstance(match.group(), 1)
+                })
+            return extracted_units
         if level == 1:
             complexUnit = ComplexUnit()
             complexUnit.numerator_units = getComplexUnitInstance(matches[0].group(), 2)

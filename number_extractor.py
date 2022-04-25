@@ -204,9 +204,17 @@ def get_value_NUM_RATIONAL(num_string):
 def extract_numbers(text):
     extracted_numbers = []
     for match in re.finditer(NUM_RATIONAL, text):
+        before_index = match.span()[0] - 1
+        after_index = match.span()[1]
+        if before_index >= 0 and re.match('\w', text[before_index]):
+            continue
+        if after_index < len(text) and re.match('\w', text[after_index]):
+            continue
+
         extracted_numbers.append({
-            'marker': match.group(),
-            'span': match.span(),
-            'value': get_value_NUM_RATIONAL(match.group())
-        })
+                'marker': match.group(),
+                'span': match.span(),
+                'value': get_value_NUM_RATIONAL(match.group())
+            })
+            
     return extracted_numbers
