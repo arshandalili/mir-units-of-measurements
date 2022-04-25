@@ -194,11 +194,11 @@ def get_value_NUM_INTEGER_PLUS_FRACTION(num_string):
 def get_value_NUM_RATIONAL(num_string):
     NUM_FRACTION_match = re.fullmatch(NUM_FRACTION, num_string)
     if NUM_FRACTION_match:
-        return get_value_NUM_FRACTION(num_string)
+        return float(get_value_NUM_FRACTION(num_string))
     NUM_INTEGER_PLUS_FRACTION_match = re.fullmatch(NUM_INTEGER_PLUS_FRACTION, num_string)
     if NUM_INTEGER_PLUS_FRACTION_match:
-        return get_value_NUM_INTEGER_PLUS_FRACTION(num_string)
-    return get_value_NUM_INTEGER(num_string)
+        return float(get_value_NUM_INTEGER_PLUS_FRACTION(num_string))
+    return float(get_value_NUM_INTEGER(num_string))
 
 
 def extract_numbers(text):
