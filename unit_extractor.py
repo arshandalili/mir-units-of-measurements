@@ -1,3 +1,4 @@
+import json
 import re
 import pint
 
@@ -7,25 +8,28 @@ class ComplexUnit:
     def __init__(self):
         self.numerator_units = list()
         self.denominator_units = list()
-        self.dimensionality = None
 
 
 class Unit:
 
-    def __init__(self, name, prefix, dimensionality):
+    def __init__(self, name, prefix, dimension):
         self.name = name
         self.prefix = prefix
-        self.dimensionality = dimensionality
+        self.dimension = dimension
 
 
 def join_patterns(patterns, grouping=False):
     return '(' + ('?:' if not grouping else '') + '|'.join(patterns) + ')'
 
 
-WHITE_SPACE = r'[\s\u200c]+'
+with open('resources/prefixes.json', 'r', encoding='utf-8') as file:
+    prefixes = json.load(file)
+with open('resources/units.json', 'r', encoding='utf-8') as file:
+    units = json.load(file)
 
-UNIT = join_patterns(list(units.keys()), True)  # TODO: A function to get all units
-PREF = join_patterns(list(prefixes.keys()), True)  # TODO: A function to get all prefixes
+WHITE_SPACE = r'[\s\u200c]+'
+UNIT = join_patterns(list(units.keys()), True)
+PREF = join_patterns(list(prefixes.keys()), True)
 UNIT_PREF = rf'(?:(?:{PREF}(?:{WHITE_SPACE})?)?{UNIT})'
 UNIT_PREF_DIM = rf'(({UNIT_PREF}({WHITE_SPACE}(مربع|مکعب))?)|(((مربع|مکعب|مجذور){WHITE_SPACE})?{UNIT_PREF}))'
 MULT_CONNECTOR = join_patterns([rf'({WHITE_SPACE}(در{WHITE_SPACE})?)', rf'(({WHITE_SPACE})?(\*|×)({WHITE_SPACE})?)'])
@@ -34,16 +38,15 @@ DIV_CONNECTOR = join_patterns([rf'({WHITE_SPACE}بر{WHITE_SPACE})', rf'(({WHITE
 COMPLEX_UNIT = rf'({UNIT_PREF_DIM_SEQ}({DIV_CONNECTOR}{UNIT_PREF_DIM_SEQ})*)'
 
 
-def sing_unit_to_str(unit):
-    pr = '' if unit.prefix is None else prefixes[unit.prefix]
-    dim = 1 if unit.dimensionality is None else int(unit.dimensionality.split('**')[1])
-    return f'({pr}{units[unit.name]}**{dim})'
+def unit_to_str(unit):
+    prefix = '' if unit.prefix is None else prefixes[unit.prefix]
+    return f'({prefix}{units[unit.name]}**{unit.dimension})'
 
 
-def unit_to_str(complex_unit):
-    num = '(' + '*'.join([sing_unit_to_str(unit) for unit in complex_unit.numerator_units]) + ')'
-    den = '(' + '*'.join([sing_unit_to_str(unit) for unit in complex_unit.denominator_units]) + ')'
-    return num + '/' + den
+def complex_unit_to_str(complex_unit):
+    numerator = '(' + '*'.join([unit_to_str(unit) for unit in complex_unit.numerator_units]) + ')'
+    denominator = '(' + '*'.join([unit_to_str(unit) for unit in complex_unit.denominator_units]) + ')'
+    return numerator + '/' + denominator
 
 
 def extract_units(text):
@@ -67,13 +70,12 @@ def extract_units(text):
         if level == 2:
             return [getComplexUnitInstance(match.group(), 3) for match in matches]
         if level == 3:
-            power = 1
+            dimension = 1
             if re.findall("مجذور|مربع", text):
-                power = 2
+                dimension = 2
             if re.findall("مکعب", text):
-                power = 3
+                dimension = 3
             prefix, name = tuple(re.search(UNIT_PREF, matches[0].group()).groups())
-            dimensionality = f"[length] ** {power}"
-            return Unit(name, prefix, dimensionality)
+            return Unit(name, prefix, dimension)
 
     return getComplexUnitInstance(text, 0)
