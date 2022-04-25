@@ -26,6 +26,8 @@ with open('resources/prefixes.json', 'r', encoding='utf-8') as file:
     prefixes_dict = json.load(file)
 with open('resources/units.json', 'r', encoding='utf-8') as file:
     units_dict = json.load(file)
+with open('resources/quantities.json', 'r', encoding='utf-8') as file:
+    quantites_dict = json.load(file)
 
 WHITE_SPACE = r'[\s\u200c]+'
 UNIT = join_patterns(list(units_dict.keys()), True)
@@ -46,7 +48,18 @@ def unit_to_str(unit):
 def complex_unit_to_str(complex_unit):
     numerator_str = '(' + '*'.join([unit_to_str(unit) for unit in complex_unit.numerator_units]) + ')'
     denominator_str = '(' + '*'.join([unit_to_str(unit) for unit in complex_unit.denominator_units]) + ')'
-    return numerator_str + (denominator_str if len(complex_unit.denominator_units) > 0 else '')
+    return numerator_str + ('/' + denominator_str if len(complex_unit.denominator_units) > 0 else '')
+
+
+def unit_to_quantity(unit):
+    str = unit_to_str(unit) if isinstance(unit, Unit) else complex_unit_to_str(unit)
+    ureg = pint.UnitRegistry()
+    dimensionality_dict = dict(ureg(str).dimensionality)
+    quantites = []
+    for key, value in quantites_dict.items():
+        if value == dimensionality_dict:
+            quantites.append(key)
+    return quantites
 
 
 def extract_units(text):
