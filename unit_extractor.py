@@ -51,7 +51,6 @@ def extract_units(text):
         pattern = [COMPLEX_UNIT, UNIT_PREF_DIM_SEQ, UNIT_PREF_DIM, UNIT_PREF][level]
         matches = [match for match in re.finditer(pattern, text)]
         if level == 0:
-            print("level 0", matches)
             return [{
                 'marker': match.group(),
                 'span': match.span(),
