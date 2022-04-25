@@ -22,11 +22,11 @@ def join_patterns(patterns, grouping=False):
     return '(' + ('?:' if not grouping else '') + '|'.join(patterns) + ')'
 
 
-with open('resources/prefixes.json', 'r', encoding='utf-8') as file:
+with open('resources/dataset/prefixes.json', 'r', encoding='utf-8') as file:
     prefixes_dict = json.load(file)
-with open('resources/units.json', 'r', encoding='utf-8') as file:
+with open('resources/dataset/units.json', 'r', encoding='utf-8') as file:
     units_dict = json.load(file)
-with open('resources/quantities.json', 'r', encoding='utf-8') as file:
+with open('resources/dataset/quantities.json', 'r', encoding='utf-8') as file:
     quantites_dict = json.load(file)
 
 WHITE_SPACE = r'[\s\u200c]+'
