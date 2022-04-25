@@ -1,6 +1,6 @@
 import json
-import re
 import pint
+import re
 
 
 class ComplexUnit:
