@@ -23,13 +23,13 @@ def join_patterns(patterns, grouping=False):
 
 
 with open('resources/prefixes.json', 'r', encoding='utf-8') as file:
-    prefixes = json.load(file)
+    prefixes_dict = json.load(file)
 with open('resources/units.json', 'r', encoding='utf-8') as file:
-    units = json.load(file)
+    units_dict = json.load(file)
 
 WHITE_SPACE = r'[\s\u200c]+'
-UNIT = join_patterns(list(units.keys()), True)
-PREF = join_patterns(list(prefixes.keys()), True)
+UNIT = join_patterns(list(units_dict.keys()), True)
+PREF = join_patterns(list(prefixes_dict.keys()), True)
 UNIT_PREF = rf'(?:(?:{PREF}(?:{WHITE_SPACE})?)?{UNIT})'
 UNIT_PREF_DIM = rf'(({UNIT_PREF}({WHITE_SPACE}(مربع|مکعب))?)|(((مربع|مکعب|مجذور){WHITE_SPACE})?{UNIT_PREF}))'
 MULT_CONNECTOR = join_patterns([rf'({WHITE_SPACE}(در{WHITE_SPACE})?)', rf'(({WHITE_SPACE})?(\*|×)({WHITE_SPACE})?)'])
@@ -39,14 +39,14 @@ COMPLEX_UNIT = rf'({UNIT_PREF_DIM_SEQ}({DIV_CONNECTOR}{UNIT_PREF_DIM_SEQ})*)'
 
 
 def unit_to_str(unit):
-    prefix = '' if unit.prefix is None else prefixes[unit.prefix]
-    return f'({prefix}{units[unit.name]}**{unit.dimension})'
+    prefix = '' if unit.prefix is None else prefixes_dict[unit.prefix]
+    return f'({prefix}{units_dict[unit.name]}**{unit.dimension})'
 
 
 def complex_unit_to_str(complex_unit):
-    numerator = '(' + '*'.join([unit_to_str(unit) for unit in complex_unit.numerator_units]) + ')'
-    denominator = '(' + '*'.join([unit_to_str(unit) for unit in complex_unit.denominator_units]) + ')'
-    return numerator + '/' + denominator
+    numerator_str = '(' + '*'.join([unit_to_str(unit) for unit in complex_unit.numerator_units]) + ')'
+    denominator_str = '(' + '*'.join([unit_to_str(unit) for unit in complex_unit.denominator_units]) + ')'
+    return numerator_str + (denominator_str if len(complex_unit.denominator_units) > 0 else '')
 
 
 def extract_units(text):
