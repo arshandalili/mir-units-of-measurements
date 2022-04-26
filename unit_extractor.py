@@ -24,10 +24,20 @@ def join_patterns(patterns, grouping=False):
 
 with open('resources/dataset/prefixes.json', 'r', encoding='utf-8') as file:
     prefixes_dict = json.load(file)
-with open('resources/dataset/units.json', 'r', encoding='utf-8') as file:
+with open('resources/raw/units.json', 'r', encoding='utf-8') as file:
     units_dict = json.load(file)
 with open('resources/dataset/quantities.json', 'r', encoding='utf-8') as file:
     quantites_dict = json.load(file)
+
+BASE_TYPES = {
+    '[length]': 'طول',
+    '[mass]': 'جرم',
+    '[time]': 'زمان',
+    '[current]': 'جریان الکتریکی',
+    '[temperature]': 'دما',
+    '[substance]': 'مقدار ماده',
+    '[luminosity]': 'شدت روشنایی'
+}
 
 WHITE_SPACE = r'[\s\u200c]+'
 UNIT = join_patterns(list(units_dict.keys()), True)
@@ -56,13 +66,20 @@ def unit_to_str(unit):
 
 
 def unit_to_quantity(unit):
-    str = unit_to_str(unit)
+    unit_as_str = unit_to_str(unit)
     ureg = pint.UnitRegistry()
-    dimensionality_dict = dict(ureg(str).dimensionality)
+    dimensionality_dict = dict(ureg(unit_as_str).dimensionality)
     quantites = []
     for key, value in quantites_dict.items():
         if value == dimensionality_dict:
             quantites.append(key)
+    if len(quantites) == 0:
+        temp = str(ureg(unit_as_str).dimensionality)
+        for key, value in BASE_TYPES.items():
+            temp = temp.replace(key, value)
+        temp = temp.replace('**', 'به توان')
+        temp = temp.replace('*', 'در')
+        return [temp]
     return quantites
 
 

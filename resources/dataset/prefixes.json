@@ -37,6 +37,7 @@
     "nano": "n",
     "micro": "u",
     "\u00b5": "u",
+    "\u03bc": "u",
     "milli": "m",
     "centi": "c",
     "deci": "d",
