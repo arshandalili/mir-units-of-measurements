@@ -24,7 +24,7 @@ def join_patterns(patterns, grouping=False):
 
 with open('resources/dataset/prefixes.json', 'r', encoding='utf-8') as file:
     prefixes_dict = json.load(file)
-with open('resources/raw/units.json', 'r', encoding='utf-8') as file:
+with open('resources/dataset/units.json', 'r', encoding='utf-8') as file:
     units_dict = json.load(file)
 with open('resources/dataset/quantities.json', 'r', encoding='utf-8') as file:
     quantites_dict = json.load(file)
@@ -128,3 +128,8 @@ def extract_units(text):
             return Unit(name, prefix, dimension)
 
     return getComplexUnitInstance(text, 0)
+
+units_dict['کلوین'] = 'kelvin'
+sortedlist = sorted(units_dict.items(), key=lambda s: -len(s[0]))
+with open('resources/dataset/units.json', 'w', encoding='utf-8') as fp:
+    json.dump(dict(sortedlist),fp,indent=4)
