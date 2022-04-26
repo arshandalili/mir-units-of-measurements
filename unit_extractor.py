@@ -65,6 +65,11 @@ def unit_to_str(unit):
     return convert_unit_to_str(unit) if isinstance(unit, Unit) else convert_complex_unit_to_str(unit)
 
 
+def unit_to_SI_unit(unit):
+    ureg = pint.UnitRegistry()
+    return ureg(unit_to_str(unit)).to_base_units()
+
+
 def unit_to_quantity(unit):
     unit_as_str = unit_to_str(unit)
     ureg = pint.UnitRegistry()
