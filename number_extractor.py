@@ -6,6 +6,17 @@ def join_patterns(patterns, grouping=False):
     return '(' + ('?:' if not grouping else '') + '|'.join(patterns) + ')'
 
 
+END_WORDS_LIST = [
+    'م',
+    'مین',
+    'بار',
+    'عدد',
+    'برابر',
+    'دفعه',
+    'مرتبه',
+    'تا',
+]
+
 NUM_1_2_to_9_DICT = {
     'یک': 1,
     'دو': 2,
@@ -121,6 +132,9 @@ NUM_INTEGER_PLUS_FRACTION = rf'({NUM_INTEGER}{CONNECTOR}{NUM_FRACTION})'
 # Pattern for NUM ∈ Q
 NUM_RATIONAL = join_patterns([NUM_FRACTION, NUM_INTEGER_PLUS_FRACTION, NUM_INTEGER])
 
+# Pattern for NUM in text
+NUM_IN_TEXT = rf'{NUM_RATIONAL}{join_patterns(END_WORDS_LIST)}?'
+
 
 def get_value_NUM_DIGIT_BASED(num_string):
     return float(unidecode.unidecode(num_string))
@@ -203,7 +217,7 @@ def get_value_NUM_RATIONAL(num_string):
 
 def extract_numbers(text):
     extracted_numbers = []
-    for match in re.finditer(NUM_RATIONAL, text):
+    for match in re.finditer(NUM_IN_TEXT, text):
         before_index = match.span()[0] - 1
         after_index = match.span()[1]
         if before_index >= 0 and re.match('\w', text[before_index]):
@@ -212,9 +226,9 @@ def extract_numbers(text):
             continue
 
         extracted_numbers.append({
-                'marker': match.group(),
-                'span': match.span(),
-                'value': get_value_NUM_RATIONAL(match.group())
-            })
-            
+            'marker': match.group(),
+            'span': match.span(),
+            'value': get_value_NUM_RATIONAL(match.group())
+        })
+
     return extracted_numbers
