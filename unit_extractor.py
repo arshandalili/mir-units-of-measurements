@@ -40,19 +40,23 @@ DIV_CONNECTOR = join_patterns([rf'({WHITE_SPACE}بر{WHITE_SPACE})', rf'(({WHITE
 COMPLEX_UNIT = rf'({UNIT_PREF_DIM_SEQ}({DIV_CONNECTOR}{UNIT_PREF_DIM_SEQ})*)'
 
 
-def unit_to_str(unit):
+def convert_unit_to_str(unit):
     prefix = '' if unit.prefix is None else prefixes_dict[unit.prefix]
     return f'({prefix}{units_dict[unit.name]}**{unit.dimension})'
 
 
-def complex_unit_to_str(complex_unit):
-    numerator_str = '(' + '*'.join([unit_to_str(unit) for unit in complex_unit.numerator_units]) + ')'
-    denominator_str = '(' + '*'.join([unit_to_str(unit) for unit in complex_unit.denominator_units]) + ')'
+def convert_complex_unit_to_str(complex_unit):
+    numerator_str = '(' + '*'.join([convert_unit_to_str(unit) for unit in complex_unit.numerator_units]) + ')'
+    denominator_str = '(' + '*'.join([convert_unit_to_str(unit) for unit in complex_unit.denominator_units]) + ')'
     return numerator_str + ('/' + denominator_str if len(complex_unit.denominator_units) > 0 else '')
 
 
+def unit_to_str(unit):
+    return convert_unit_to_str(unit) if isinstance(unit, Unit) else convert_complex_unit_to_str(unit)
+
+
 def unit_to_quantity(unit):
-    str = unit_to_str(unit) if isinstance(unit, Unit) else complex_unit_to_str(unit)
+    str = unit_to_str(unit)
     ureg = pint.UnitRegistry()
     dimensionality_dict = dict(ureg(str).dimensionality)
     quantites = []
