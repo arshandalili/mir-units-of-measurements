@@ -129,7 +129,10 @@ def extract_units(text):
     return getComplexUnitInstance(text, 0)
 
 
-# units_dict['کلوین'] = 'kelvin'
+# units_dict['سی سی'] = 'cubic_centimeter'
+# units_dict['سی‌سی'] = 'cubic_centimeter'
+# units_dict['رادیان'] = 'radian'
+
 # sortedlist = sorted(units_dict.items(), key=lambda s: -len(s[0]))
 # with open('resources/dataset/units.json', 'w', encoding='utf-8') as fp:
 #     json.dump(dict(sortedlist),fp,indent=4)
