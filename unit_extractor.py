@@ -101,7 +101,6 @@ def extract_units(text):
                     continue
                 if after_index < len(text) and re.match('\w', text[after_index]):
                     continue
-
                 extracted_units.append({
                     'marker': match.group(),
                     'span': match.span(),
@@ -129,7 +128,8 @@ def extract_units(text):
 
     return getComplexUnitInstance(text, 0)
 
-units_dict['کلوین'] = 'kelvin'
-sortedlist = sorted(units_dict.items(), key=lambda s: -len(s[0]))
-with open('resources/dataset/units.json', 'w', encoding='utf-8') as fp:
-    json.dump(dict(sortedlist),fp,indent=4)
+
+# units_dict['کلوین'] = 'kelvin'
+# sortedlist = sorted(units_dict.items(), key=lambda s: -len(s[0]))
+# with open('resources/dataset/units.json', 'w', encoding='utf-8') as fp:
+#     json.dump(dict(sortedlist),fp,indent=4)

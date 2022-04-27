@@ -90,7 +90,7 @@ NUM_UNDER_1000_DICT = {
 
 WHITE_SPACE = r'[\s\u200c]+'
 CONNECTOR = rf'{WHITE_SPACE}و{WHITE_SPACE}'
-DIGITS = r'[۰۱۲۳۴۵۶۷۸۹0123456789]'
+DIGITS = r'[۰۱۲۳۴۵۶۷۸۹0123456789٠١٢٣٤٥٦٧٨٩]'
 NEGATIVE = r'منفی'
 DOTS = r'[٫\.]'
 ZERO = r'صفر'
