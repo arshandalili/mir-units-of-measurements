@@ -39,6 +39,16 @@ BASE_TYPES = {
     '[luminosity]': 'شدت روشنایی'
 }
 
+BASE_UNITS = {
+    '[length]': 'm',
+    '[mass]': 'kg',
+    '[time]': 's',
+    '[current]': 'amp',
+    '[temperature]': 'kelvin',
+    '[substance]': 'mol',
+    '[luminosity]': 'candela'
+}
+
 WHITE_SPACE = r'[\s\u200c]+'
 UNIT = join_patterns(list(units_dict.keys()), True)
 PREF = join_patterns(list(prefixes_dict.keys()), True)
@@ -86,6 +96,14 @@ def unit_to_quantity(unit):
         temp = temp.replace('*', 'در')
         return [temp]
     return quantites
+
+
+def quantity_to_SI_unit(quantity):
+    dimensionality_dict = quantites_dict[quantity]
+    units_dict = {BASE_UNITS[k]: v for k, v in dimensionality_dict.items()}
+    units_str = '*'.join([f'({k}**{v})' for k, v in units_dict.items()])
+    ureg = pint.UnitRegistry()
+    return str(ureg(units_str).to_base_units().units)
 
 
 def extract_units(text):
